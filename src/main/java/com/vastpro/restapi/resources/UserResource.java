@@ -1,5 +1,6 @@
 package com.vastpro.restapi.resources;
 import javax.ws.rs.core.Response.Status;
+
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -20,7 +21,7 @@ import org.apache.ofbiz.entity.util.EntityQuery;
 import org.apache.ofbiz.service.LocalDispatcher;
 import org.apache.ofbiz.service.ServiceContainer;
 import org.apache.ofbiz.service.ServiceUtil;
-@Path("/students")
+@Path("/user")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserResource {
@@ -161,14 +162,12 @@ public class UserResource {
             Map<String, Object> result =userLogin(context);
 //                dispatcher.runSync("userLogin", context);
             if ("success".equals(result.get("responseMessage"))) {
-//                return Response.ok(
-//                    Map.of(
-//                        "status", "success",
-//                        "message", "Login successful"
-//                    )
-//                ).build();
-            	Map<String, Object> result1=ServiceUtil.returnError("error");
-            	return Response.ok(result1).build();
+                return Response.ok(
+                    Map.of(
+                        "status", "success",
+                        "message", "Login successful"
+                    )
+                ).build();
             } else {
                 return Response.status(401).entity(
                     Map.of(
@@ -194,5 +193,43 @@ public class UserResource {
     	}else {
     		return ServiceUtil.returnError("error");
     	}
+    }
+    @POST
+    @Path("/signup")
+    public Response signup(Map<String, Object> context) {
+    	
+    	LocalDispatcher dispatcher = getDispatcher();
+            try {
+            	System.out.println("signup in");
+            	   Map<String, Object> result = dispatcher.runSync("regService", context);
+            	   System.out.println("signup out");
+             if ("Employee created successfully".equals(result.get("successMessage"))) {
+            	 System.out.println("signup if");
+                return Response.ok(
+                    Map.of(
+                        "status", "success",
+                        "message", "user created"
+                    )
+                ).build();
+
+            }else {
+            	System.out.println("signup else");
+                return Response.status(401).entity(
+                        Map.of(
+                            "status", "error",
+                            "message", result.get("errorMessage")
+                        )
+                    ).build();
+                }
+             } catch (Exception e) {
+                return Response.status(500)
+                        .entity(Map.of(
+                            "status", "error",
+                            "message", e.getMessage()
+                        ))
+                        .build();
+            }
+        
+    	
     }
 }
