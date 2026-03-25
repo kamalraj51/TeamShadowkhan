@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ofbiz.entity.Delegator;
 import org.apache.ofbiz.entity.GenericEntityException;
 import org.apache.ofbiz.entity.GenericValue;
+import org.apache.ofbiz.party.party.PartyServices;
 import org.apache.ofbiz.service.DispatchContext;
 import org.apache.ofbiz.service.ServiceUtil;
 
@@ -13,6 +14,8 @@ public class ExamService {
 	public Map<String,Object> examCreate(DispatchContext context,Map<String,Object> input){
 		Delegator delecator=context.getDelegator();
 		try {
+			
+			
 		GenericValue value=delecator.makeValue("ExamMaster");
 		String examid ="SPX_"+delecator.getNextSeqId("examId");
 		value.set("examName",input.get("examName"));
